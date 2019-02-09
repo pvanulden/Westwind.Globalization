@@ -91,8 +91,6 @@ namespace Westwind.Globalization
         static DbResourceConfiguration()
         {
             Current = new DbResourceConfiguration();
-            Current.Initialize(sectionName: "DbResourceConfiguration");
-            Current.Read();
         }
 
         /// <summary>
@@ -262,7 +260,32 @@ namespace Westwind.Globalization
         public void AddResourceSetValueConverter(IResourceSetValueConverter converter)
         {
             ResourceSetValueConverters.Add(converter);
-        }        
+        }
+
+        /// <summary>
+        /// Override this method to handle custom initialization tasks.
+        /// 
+        /// This method should: create a provider and call it's Read()
+        /// method to populate the current instance of the configuration
+        /// object.
+        /// 
+        /// If all you need is to create a default provider configuration
+        /// use the OnCreateDefaultProvider() method to override instead.
+        /// Use this method if you need to perform custom actions beyond
+        /// provider instantiation.
+        /// </summary>
+        /// <param name="provider">Provider value - can be null in which case ConfigurationFileProvider is used</param>
+        /// <param name="sectionName">Sub Section name - can be null. Classname is used if null. Can be "appSettings" </param>
+        /// <param name="configData">
+        /// Any additional configuration data that can be used to
+        /// configure the provider.
+        /// </param>
+        protected override void OnInitialize(IConfigurationProvider provider,
+                                           string sectionName,
+                                           object configData)
+        {
+            Provider = provider;
+        }
 
         /// <summary>
         /// Override this method to create the custom default provider. Here we allow for different 
